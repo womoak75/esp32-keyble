@@ -248,16 +248,16 @@ String saveParams(AutoConnectAux& aux, PageArgument& args) {
 // ---[MqttCallback]------------------------------------------------------------
 void MqttCallback(char* topic, byte* payload, unsigned int length) {
   Serial.print("# Message received: ");
-    /*
+    
   //pair
   if (payload[0] == '6')
   {
     do_pair = true;
     mqtt_sub = "*** pair ***";
-    Serial.println(mqtt_sub");
+    Serial.println(mqtt_sub);
     
   }
-  */
+  
   //toggle
   if (payload[0] == '5')
   {
@@ -374,7 +374,7 @@ void MqttPublish()
 // ---[MQTT-Setup]--------------------------------------------------------------
 void SetupMqtt() {
   while (!mqttClient.connected()) { // Loop until we're reconnected to the MQTT server
-    mqttClient.setServer(MqttServerName.c_str(), MqttPort.toInt());
+    mqttClient.setServer(MqttServerName.c_str(), MqttPort.isEmpty()?1883:MqttPort.toInt());
     mqttClient.setCallback(&MqttCallback);
   	Serial.println("# Connect to MQTT-Broker... ");
     if (mqttClient.connect(MqttTopic.c_str(), MqttUserName.c_str(), MqttUserPass.c_str())) {
@@ -538,6 +538,9 @@ void setup() {
     //Bluetooth
     BLEDevice::init("");
     keyble = new eQ3(KeyBleMac.c_str(), KeyBleUserKey.c_str(), KeyBleUserId.toInt());
+    //keyble->setOnStatusChange([](LockStatus s){
+    //    Serial.print("# status ");Serial.println(s);
+    //});
     //get lockstatus on boot
     do_status = true;
   }
@@ -684,6 +687,8 @@ if (do_open || do_lock || do_unlock || do_status || do_toggle || do_pair)
       Serial.println(pairKey.c_str());
       std::string pairSerial = cardKey.substr(46,10);
       Serial.println(pairSerial.c_str());
+
+      keyble->pairingRequest(cardKey);
      }
      else
      {
