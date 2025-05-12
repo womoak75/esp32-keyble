@@ -93,7 +93,6 @@ CMakeLists.txt
 cmake-build-debug
 
 ### VisualStudioCode ###
-.vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
@@ -106,3 +105,5 @@ cmake-build-debug
 # End of https://www.gitignore.io/api/clion+all,platformio,visualstudiocode
 #
 secrets.h
+.vscode/*
+.pio/*
