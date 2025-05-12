@@ -35,6 +35,7 @@ void notify_func(BLERemoteCharacteristic* pBLERemoteCharacteristic, uint8_t* pDa
 // -----------------------------------------------------------------------------
 // Important: Initialize BLEDevice::init(""); yourself
 eQ3::eQ3(std::string ble_address, std::string user_key, unsigned char user_id) {
+    onStatusChange = nullptr;
     state.user_key = hexstring_to_string(user_key);
     //Serial.println(state.user_key.length());
     state.user_id = user_id;
@@ -338,7 +339,9 @@ void eQ3::onNotify(BLERemoteCharacteristic* pBLERemoteCharacteristic, uint8_t* p
                 Serial.println(message.getLockStatus());
                 _LockStatus = message.getLockStatus();
                 raw_data = message.data;
-                //onStatusChange((LockStatus)message.getLockStatus()); // BUG: löst einen Reset aus!!
+                if(onStatusChange!=nullptr) {
+                    onStatusChange((LockStatus)message.getLockStatus()); // BUG: löst einen Reset aus!!
+                }
                 break;
             }
 
